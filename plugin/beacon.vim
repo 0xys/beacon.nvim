@@ -252,21 +252,24 @@ endfunction
 
 let s:prev_cursor = 0
 let s:prev_abs = 0
+let s:prev_bufnr = 0
 " highlight position if cursor moved significally
 function! s:Cursor_moved()
     let l:cur = winline()
     let l:cur_abs = line(".")
     let l:diff = abs(l:cur - s:prev_cursor)
     let l:abs_diff = abs(l:cur_abs - s:prev_abs)
+    let l:current_bufnr = bufnr('%')
 
     " absolute line number diff needed to migigate showing beacon
     " when <C-E> or <C-Y> moved more than min lines
-    if l:diff > g:beacon_minimal_jump && l:abs_diff > g:beacon_minimal_jump
+    if l:diff > g:beacon_minimal_jump || l:abs_diff > g:beacon_minimal_jump || s:prev_bufnr != l:current_bufnr
         call s:Highlight_position(v:false)
     endif
 
     let s:prev_cursor = l:cur
     let s:prev_abs = l:cur_abs
+    let s:prev_bufnr = l:current_bufnr
 
 endfunction
 
